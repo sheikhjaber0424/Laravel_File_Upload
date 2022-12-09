@@ -15,13 +15,14 @@
                 </thead>
                 <tbody>
                     @foreach ($private_items as $item)
-                        {{-- <tr>
+                        <tr>
                             <td>{{ $item->title }}</td>
-                            <td> <img src="{{ $item->image }}" width="80px" height="60px" alt=""> </td>
-                            <td> <a href="{{ route('public.edit', $item) }}"><button
+                            <td> <img src="{{ route('private.showImage', $item) }}" width="80px" height="60px"
+                                    alt=""> </td>
+                            <td> <a href="{{ route('private.edit', $item) }}"><button
                                         class="btn btn-primary">Edit</button></a>
 
-                                <form method="POST" class="d-inline-block" action="{{ route('public.delete', $item) }}">
+                                <form method="POST" class="d-inline-block" action="{{ route('private.delete', $item) }}">
                                     @method('DELETE')
                                     @csrf
                                     <button type="submit" class="btn btn-danger">Delete</button>
@@ -29,7 +30,7 @@
 
                             </td>
 
-                        </tr> --}}
+                        </tr>
                     @endforeach
 
                 </tbody>

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\PrivateImg;
 use App\Models\PublicImg;
+use Illuminate\Contracts\Cache\Store;
 use Illuminate\Support\Arr;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -92,14 +93,57 @@ class MainController extends Controller
         $valid = $request->validate([
 
             'title' => ['required', 'string', 'max:255'],
-            'image' => ['required', 'mimes:png,jpg,jpeg', 'max:2048'],
+            'image' => ['required', 'image', 'max:2048'],
         ]);
 
 
         if ($request->hasFile('image'))
-            $valid['image'] = $request->file('image')->store('uploads/img', 'public');
+            $valid['image'] = $request->file('image')->store('uploads/img2');
 
-        if (PublicImg::create($valid))
-            return redirect()->route('public.index');
+        if (PrivateImg::create($valid))
+            return redirect()->route('private.index');
+    }
+
+    public function private_show_image(PrivateImg $item)
+    {
+        return response()->file(Storage::path($item->image));
+    }
+
+
+    public function private_edit(PrivateImg $item)
+    {
+        return view('private_image.edit', compact('item'));
+    }
+
+
+
+    public function private_update(Request $request, PrivateImg $item)
+    {
+
+        $valid = $request->validate([
+
+            'title' => ['required', 'string', 'max:255'],
+            'image' => ['required', 'image', 'max:2048'],
+        ]);
+
+        if ($request->hasFile('image')) {
+            if (Storage::exists($item->image))
+                Storage::delete($item->image);
+            $valid['image'] = $request->file('image')->store('uploads/img2');
+        }
+
+        if ($item->update($valid))
+            return redirect()->route('private.index');
+    }
+
+
+
+    public function private_delete(PrivateImg $item)
+    {
+        if (Storage::exists($item->image))
+            Storage::delete($item->image);
+        $item->delete();
+
+        return redirect()->route('private.index');
     }
 }

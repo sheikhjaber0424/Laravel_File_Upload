@@ -31,3 +31,7 @@ Route::delete('/public_delete/{item}', [MainController::class, 'public_delete'])
 Route::get('/private_index', [MainController::class, 'private_index'])->name('private.index');
 Route::get('/private_create', [MainController::class, 'private_create'])->name('private.create');
 Route::post('/private_store', [MainController::class, 'private_store'])->name('private.store');
+Route::get('/private_show/{item}/image', [MainController::class, 'private_show_image'])->name('private.showImage');
+Route::get('/private_edit/{item}', [MainController::class, 'private_edit'])->name('private.edit');
+Route::put('/private_update/{item}', [MainController::class, 'private_update'])->name('private.update');
+Route::delete('/private_delete/{item}', [MainController::class, 'private_delete'])->name('private.delete');
