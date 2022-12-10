@@ -14,7 +14,7 @@
                     <a class="nav-link" href="{{ route('private.index') }}">Private</a>
                 </li>
                 <li class="nav-item me-2">
-                    <a class="nav-link" href="#">S3 Bucket</a>
+                    <a class="nav-link" href="{{ route('s3.index') }}">S3 Bucket</a>
                 </li>
 
             </ul>

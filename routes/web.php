@@ -35,3 +35,11 @@ Route::get('/private_show/{item}/image', [MainController::class, 'private_show_i
 Route::get('/private_edit/{item}', [MainController::class, 'private_edit'])->name('private.edit');
 Route::put('/private_update/{item}', [MainController::class, 'private_update'])->name('private.update');
 Route::delete('/private_delete/{item}', [MainController::class, 'private_delete'])->name('private.delete');
+
+// S3 Bucket
+Route::get('/s3_index', [MainController::class, 's3_index'])->name('s3.index');
+Route::get('/s3_create', [MainController::class, 's3_create'])->name('s3.create');
+Route::post('/s3_store', [MainController::class, 's3_store'])->name('s3.store');
+Route::get('/s3_edit/{item}', [MainController::class, 's3_edit'])->name('s3.edit');
+Route::put('/s3_update/{item}', [MainController::class, 's3_update'])->name('s3.update');
+Route::delete('/s3_delete/{item}', [MainController::class, 's3_delete'])->name('s3.delete');

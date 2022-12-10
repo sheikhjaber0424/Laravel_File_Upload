@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bucket;
 use App\Models\PrivateImg;
 use App\Models\PublicImg;
 use Illuminate\Contracts\Cache\Store;
@@ -75,6 +76,18 @@ class MainController extends Controller
     }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
     public function private_index()
     {
         $private_items = PrivateImg::all();
@@ -103,6 +116,7 @@ class MainController extends Controller
         if (PrivateImg::create($valid))
             return redirect()->route('private.index');
     }
+
 
     public function private_show_image(PrivateImg $item)
     {
@@ -145,5 +159,86 @@ class MainController extends Controller
         $item->delete();
 
         return redirect()->route('private.index');
+    }
+
+
+
+
+
+
+
+    public function s3_index()
+    {
+        $s3_items = Bucket::all();
+        return view('S3_Bucket.index', compact('s3_items'));
+    }
+
+
+    public function s3_create()
+    {
+
+        return view('S3_Bucket.create');
+    }
+
+
+    public function s3_store(Request $request)
+    {
+        $valid = $request->validate([
+
+            'title' => ['required', 'string', 'max:255'],
+            'image' => ['required', 'image', 'max:2048'],
+        ]);
+
+
+        if ($request->hasFile('image')) {
+            try {
+                $valid['image'] = $request->file('image')->storePublicly('uploads/bucket', 's3');
+            } catch (\Exception $exception) {
+                return back()->with('error', $exception->getMessage());
+            }
+        }
+        if (Bucket::create($valid))
+            return redirect()->route('private.index');
+    }
+
+
+    public function s3_edit(Bucket $item)
+    {
+        return view('S3_Bucket.edit', compact('item'));
+    }
+
+    public function s3_update(Request $request, Bucket $item)
+    {
+
+        $valid = $request->validate([
+
+            'title' => ['required', 'string', 'max:255'],
+            'image' => ['required', 'image', 'max:2048'],
+        ]);
+
+        if ($request->hasFile('image')) {
+            try {
+                if (Storage::disk('s3')->exists($item->getRawOriginal('image')))
+                    Storage::disk('s3')->delete($item->getRawOriginal('image'));
+
+                $valid['image'] = $request->file('image')->storePublicly('uploads/bucket', 's3');
+            } catch (\Exception $exception) {
+                return back()->with('error', $exception->getMessage());
+            }
+        }
+
+        if ($item->update($valid))
+            return redirect()->route('s3.index');
+    }
+
+
+    public function s3_delete(Bucket $item)
+    {
+        if (Storage::disk('s3')->exists($item->getRawOriginal('image')))
+            Storage::disk('s3')->delete($item->getRawOriginal('image'));
+
+        $item->delete();
+
+        return redirect()->route('s3.index');
     }
 }
