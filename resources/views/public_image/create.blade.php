@@ -6,7 +6,7 @@
 
             <div class="col-md-8">
 
-                <form action="{{ route('private.store') }}" method="POST" enctype="multipart/form-data">
+                <form action="{{ route('public.store') }}" method="POST" enctype="multipart/form-data">
                     @csrf
 
 
